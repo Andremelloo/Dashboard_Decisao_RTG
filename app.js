@@ -2,7 +2,7 @@
 // Core Application Logic - Rev 2.5 (3 Strategic Solutions + ZPMC Benchmark + Genset Impact)
 
 document.addEventListener('DOMContentLoaded', () => {
-  initAuth();
+  checkAuthStatus();
   if (window.I18N) {
     window.onLanguageChange = (lang) => {
       renderKPIs();
@@ -12,8 +12,8 @@ document.addEventListener('DOMContentLoaded', () => {
       updateSimulatorUI();
       const searchInp = document.getElementById('fleet-search');
       if (searchInp) searchInp.placeholder = window.I18N.get('search_placeholder');
-      const pwdInp = document.getElementById('auth-password');
-      if (pwdInp) pwdInp.placeholder = window.I18N.get('auth_pwd_placeholder');
+      const pwdInp = document.getElementById('login-password');
+      if (pwdInp) pwdInp.placeholder = window.I18N.get('loginPlaceholder') || 'Enter password...';
     };
     window.I18N.init();
   }
@@ -1106,85 +1106,111 @@ function initModal() {
   }
 }
 
-// ========================================================
-// Access Control / Gatekeeper (Password: tcp@2026)
-// ========================================================
-function initAuth() {
-  const gate = document.getElementById('auth-gate');
-  const pwdInput = document.getElementById('auth-password');
-  const errorMsg = document.getElementById('auth-error-msg');
-  const form = document.getElementById('auth-form');
-  const toggleBtn = document.getElementById('auth-toggle-pwd');
-  const lockBtn = document.getElementById('btn-lock-session');
+// ==========================================================================
+// Access Control & Authentication (Identical to TCP Strategic Fleet Custos_01_08_2026)
+// ==========================================================================
+const AUTH_KEY = 'tcp_rtg_auth_session';
+const PASSWORD_HASH = '67d0848a01e3815cf8b5d6e2f9a2c59fbaa38e5e3dfd3774af53e319f82b72e4';
 
-  // Check existing authenticated session
-  const isAuth = sessionStorage.getItem('tcp_rtg_auth') === 'true';
-  if (isAuth && gate) {
-    gate.style.display = 'none';
-  } else if (gate) {
-    gate.style.display = 'flex';
-    setTimeout(() => pwdInput?.focus(), 150);
+function checkAuthStatus() {
+  const isAuth = sessionStorage.getItem(AUTH_KEY) === 'true' || sessionStorage.getItem('tcp_rtg_auth') === 'true';
+  const gate = document.getElementById('login-gate');
+  if (isAuth) {
+    if (gate) gate.style.display = 'none';
+  } else {
+    if (gate) {
+      gate.style.display = 'flex';
+      gate.style.opacity = '1';
+      const inp = document.getElementById('login-password');
+      if (inp) setTimeout(() => inp.focus(), 150);
+    }
   }
 
-  // Language buttons inside auth card
+  // Setup login language selector buttons
   const authLangBtns = document.querySelectorAll('.auth-lang-btn');
   authLangBtns.forEach(btn => {
-    btn.addEventListener('click', (e) => {
+    btn.onclick = (e) => {
       e.preventDefault();
       const lang = btn.dataset.lang;
       if (window.I18N) window.I18N.setLanguage(lang);
       authLangBtns.forEach(b => b.classList.toggle('active', b.dataset.lang === lang));
-      const placeholder = window.I18N ? window.I18N.get('auth_pwd_placeholder') : 'Enter access password...';
-      if (pwdInput) pwdInput.placeholder = placeholder;
-    });
+    };
   });
+}
 
-  // Toggle show/hide password
-  if (toggleBtn && pwdInput) {
-    toggleBtn.addEventListener('click', () => {
-      const isPwd = pwdInput.type === 'password';
-      pwdInput.type = isPwd ? 'text' : 'password';
-      toggleBtn.style.color = isPwd ? 'var(--tcp-blue-light)' : 'var(--text-dim)';
-    });
+async function sha256(str) {
+  if (window.crypto && crypto.subtle) {
+    const buffer = new TextEncoder().encode(str);
+    const hashBuffer = await crypto.subtle.digest('SHA-256', buffer);
+    return Array.from(new Uint8Array(hashBuffer)).map(b => b.toString(16).padStart(2, '0')).join('');
   }
+  return str === 'tcp@2026' ? PASSWORD_HASH : '';
+}
 
-  // Form submit verification
-  if (form && pwdInput && gate) {
-    form.addEventListener('submit', (e) => {
-      e.preventDefault();
-      const val = pwdInput.value.trim();
-      if (val === 'tcp@2026') {
-        sessionStorage.setItem('tcp_rtg_auth', 'true');
-        if (errorMsg) errorMsg.style.display = 'none';
-        gate.classList.add('auth-gate-leave');
-        setTimeout(() => {
-          gate.style.display = 'none';
-          window.dispatchEvent(new Event('resize'));
-        }, 350);
-      } else {
-        if (errorMsg) {
-          errorMsg.style.display = 'block';
-        }
-        pwdInput.classList.add('auth-shake');
-        setTimeout(() => pwdInput.classList.remove('auth-shake'), 450);
-        pwdInput.value = '';
-        pwdInput.focus();
-      }
-    });
-  }
+async function handleLoginSubmit(e) {
+  if (e) e.preventDefault();
+  const input = document.getElementById('login-password');
+  const err = document.getElementById('login-error');
+  if (!input) return;
+  const val = input.value.trim();
 
-  // Lock button in top header
-  if (lockBtn && gate) {
-    lockBtn.addEventListener('click', () => {
-      sessionStorage.removeItem('tcp_rtg_auth');
-      gate.classList.remove('auth-gate-leave');
-      gate.style.display = 'flex';
-      if (pwdInput) {
-        pwdInput.value = '';
-        if (errorMsg) errorMsg.style.display = 'none';
-        setTimeout(() => pwdInput.focus(), 100);
-      }
-    });
+  const computed = await sha256(val);
+  if (computed === PASSWORD_HASH || val === 'tcp@2026') {
+    sessionStorage.setItem(AUTH_KEY, 'true');
+    sessionStorage.setItem('tcp_rtg_auth', 'true');
+    if (err) err.style.display = 'none';
+    const gate = document.getElementById('login-gate');
+    if (gate) {
+      gate.style.opacity = '0';
+      setTimeout(() => { 
+        gate.style.display = 'none'; 
+        window.dispatchEvent(new Event('resize'));
+      }, 300);
+    }
+  } else {
+    if (err) {
+      err.style.display = 'flex';
+      const msg = window.I18N ? window.I18N.get('loginError') : '⚠️ Incorrect password. Try again.';
+      err.innerHTML = msg;
+    }
+    input.value = '';
+    input.focus();
   }
 }
+
+function handleLogout() {
+  sessionStorage.removeItem(AUTH_KEY);
+  sessionStorage.removeItem('tcp_rtg_auth');
+  const gate = document.getElementById('login-gate');
+  const input = document.getElementById('login-password');
+  const err = document.getElementById('login-error');
+  if (err) err.style.display = 'none';
+  if (input) input.value = '';
+  if (gate) {
+    gate.style.display = 'flex';
+    setTimeout(() => { 
+      gate.style.opacity = '1'; 
+      if (input) input.focus();
+    }, 10);
+  }
+}
+
+function togglePasswordVisibility() {
+  const input = document.getElementById('login-password');
+  const btn = document.getElementById('btn-toggle-pwd');
+  if (!input || !btn) return;
+  if (input.type === 'password') {
+    input.type = 'text';
+    btn.innerHTML = '&#128064;';
+  } else {
+    input.type = 'password';
+    btn.innerHTML = '&#128065;&#65039;';
+  }
+}
+
+window.handleLoginSubmit = handleLoginSubmit;
+window.handleLogout = handleLogout;
+window.togglePasswordVisibility = togglePasswordVisibility;
+window.checkAuthStatus = checkAuthStatus;
+window.initAuth = checkAuthStatus;
 

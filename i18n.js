@@ -16,7 +16,15 @@ window.I18N = {
       btn_dossier: "Executive Dossier (PDF / Print)",
       btn_lock: "Lock",
 
-      // Auth Gate
+      // Login Gate (Identical to Custo-RTG)
+      loginTitle: "TCP",
+      loginSub: "Strategic Fleet Decision Dashboard • RTGs",
+      loginLabel: "🔒 Access Password",
+      loginPlaceholder: "Enter password...",
+      loginBtn: "Access Dashboard",
+      loginError: "⚠️ Incorrect password. Try again.",
+      loginFooter: "🛡️ Secure Environment • Restricted Access • TCP Engineering",
+      logoutBtn: "Logout",
       auth_title: "Restricted Corporate Access",
       auth_sub: "TCP Executive Board & CMPort Investment Committee",
       auth_pwd_label: "Access Password",
@@ -341,7 +349,15 @@ window.I18N = {
       btn_dossier: "Dossiê Executivo (PDF / Print)",
       btn_lock: "Bloquear",
 
-      // Auth Gate (PT)
+      // Login Gate (Identical to Custo-RTG - PT)
+      loginTitle: "TCP",
+      loginSub: "Painel de Decisão Estratégica da Frota • RTGs",
+      loginLabel: "🔒 Senha de Acesso",
+      loginPlaceholder: "Digite a senha...",
+      loginBtn: "Acessar Dashboard",
+      loginError: "⚠️ Senha incorreta. Tente novamente.",
+      loginFooter: "🛡️ Ambiente Seguro • Acesso Restrito • Engenharia TCP",
+      logoutBtn: "Sair",
       auth_title: "Acesso Corporativo Restrito",
       auth_sub: "Diretoria Executiva da TCP & Comitê de Investimento da CMPort",
       auth_pwd_label: "Senha de Acesso",
@@ -666,7 +682,15 @@ window.I18N = {
       btn_dossier: "執行檔案彙編 (PDF / 列印)",
       btn_lock: "鎖定",
 
-      // Auth Gate (ZH)
+      // Login Gate (Identical to Custo-RTG - ZH)
+      loginTitle: "TCP",
+      loginSub: "RTG車隊戰略決策儀表板",
+      loginLabel: "🔒 訪問授權密碼",
+      loginPlaceholder: "請輸入密碼...",
+      loginBtn: "進入儀表板",
+      loginError: "⚠️ 密碼錯誤，請重試",
+      loginFooter: "🛡️ 安全環境 • 受限訪問 • TCP工程部",
+      logoutBtn: "鎖定 / 登出",
       auth_title: "企業內部受限訪問",
       auth_sub: "TCP 執行董事會及招商局港口投資決策委員會專屬",
       auth_pwd_label: "訪問授權密碼",
@@ -1006,6 +1030,11 @@ window.I18N = {
         el.innerHTML = dict[key];
       }
     });
+
+    const loginPwd = document.getElementById('login-password');
+    if (loginPwd && dict['loginPlaceholder']) {
+      loginPwd.placeholder = dict['loginPlaceholder'];
+    }
 
     // Update dynamic components
     if (typeof window.onLanguageChange === 'function') {
