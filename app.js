@@ -2,6 +2,7 @@
 // Core Application Logic - Rev 2.5 (3 Strategic Solutions + ZPMC Benchmark + Genset Impact)
 
 document.addEventListener('DOMContentLoaded', () => {
+  initAuth();
   if (window.I18N) {
     window.onLanguageChange = (lang) => {
       renderKPIs();
@@ -11,6 +12,8 @@ document.addEventListener('DOMContentLoaded', () => {
       updateSimulatorUI();
       const searchInp = document.getElementById('fleet-search');
       if (searchInp) searchInp.placeholder = window.I18N.get('search_placeholder');
+      const pwdInp = document.getElementById('auth-password');
+      if (pwdInp) pwdInp.placeholder = window.I18N.get('auth_pwd_placeholder');
     };
     window.I18N.init();
   }
@@ -1102,3 +1105,86 @@ function initModal() {
     });
   }
 }
+
+// ========================================================
+// Access Control / Gatekeeper (Password: tcp@2026)
+// ========================================================
+function initAuth() {
+  const gate = document.getElementById('auth-gate');
+  const pwdInput = document.getElementById('auth-password');
+  const errorMsg = document.getElementById('auth-error-msg');
+  const form = document.getElementById('auth-form');
+  const toggleBtn = document.getElementById('auth-toggle-pwd');
+  const lockBtn = document.getElementById('btn-lock-session');
+
+  // Check existing authenticated session
+  const isAuth = sessionStorage.getItem('tcp_rtg_auth') === 'true';
+  if (isAuth && gate) {
+    gate.style.display = 'none';
+  } else if (gate) {
+    gate.style.display = 'flex';
+    setTimeout(() => pwdInput?.focus(), 150);
+  }
+
+  // Language buttons inside auth card
+  const authLangBtns = document.querySelectorAll('.auth-lang-btn');
+  authLangBtns.forEach(btn => {
+    btn.addEventListener('click', (e) => {
+      e.preventDefault();
+      const lang = btn.dataset.lang;
+      if (window.I18N) window.I18N.setLanguage(lang);
+      authLangBtns.forEach(b => b.classList.toggle('active', b.dataset.lang === lang));
+      const placeholder = window.I18N ? window.I18N.get('auth_pwd_placeholder') : 'Enter access password...';
+      if (pwdInput) pwdInput.placeholder = placeholder;
+    });
+  });
+
+  // Toggle show/hide password
+  if (toggleBtn && pwdInput) {
+    toggleBtn.addEventListener('click', () => {
+      const isPwd = pwdInput.type === 'password';
+      pwdInput.type = isPwd ? 'text' : 'password';
+      toggleBtn.style.color = isPwd ? 'var(--tcp-blue-light)' : 'var(--text-dim)';
+    });
+  }
+
+  // Form submit verification
+  if (form && pwdInput && gate) {
+    form.addEventListener('submit', (e) => {
+      e.preventDefault();
+      const val = pwdInput.value.trim();
+      if (val === 'tcp@2026') {
+        sessionStorage.setItem('tcp_rtg_auth', 'true');
+        if (errorMsg) errorMsg.style.display = 'none';
+        gate.classList.add('auth-gate-leave');
+        setTimeout(() => {
+          gate.style.display = 'none';
+          window.dispatchEvent(new Event('resize'));
+        }, 350);
+      } else {
+        if (errorMsg) {
+          errorMsg.style.display = 'block';
+        }
+        pwdInput.classList.add('auth-shake');
+        setTimeout(() => pwdInput.classList.remove('auth-shake'), 450);
+        pwdInput.value = '';
+        pwdInput.focus();
+      }
+    });
+  }
+
+  // Lock button in top header
+  if (lockBtn && gate) {
+    lockBtn.addEventListener('click', () => {
+      sessionStorage.removeItem('tcp_rtg_auth');
+      gate.classList.remove('auth-gate-leave');
+      gate.style.display = 'flex';
+      if (pwdInput) {
+        pwdInput.value = '';
+        if (errorMsg) errorMsg.style.display = 'none';
+        setTimeout(() => pwdInput.focus(), 100);
+      }
+    });
+  }
+}
+

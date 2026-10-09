@@ -14,6 +14,15 @@ window.I18N = {
       board_sub: "Board Submission Rev 3.0",
       app_subtitle: "Paranaguá Container Terminal • Strategic Life-Cycle Analysis (10 New E-RTGs, 04-14 Fleet, 01-03 Preservation & 11-14 Electrification)",
       btn_dossier: "Executive Dossier (PDF / Print)",
+      btn_lock: "Lock",
+
+      // Auth Gate
+      auth_title: "Restricted Corporate Access",
+      auth_sub: "TCP Executive Board & CMPort Investment Committee",
+      auth_pwd_label: "Access Password",
+      auth_pwd_placeholder: "Enter access password...",
+      auth_btn: "Enter Dashboard",
+      auth_error: "Incorrect password. Please try again.",
       tab_solutions: "The Three Strategic Solutions",
       tab_solutions_pill: "Core Comparison",
       tab_benchmark: "ZPMC Benchmark & Genset Impact",
@@ -330,6 +339,15 @@ window.I18N = {
       board_sub: "Submissão de Diretoria Rev 3.0",
       app_subtitle: "Terminal de Contêineres de Paranaguá • Análise Estratégica de Ciclo de Vida (10 Novos RTGs, Lote 04-14, Preservação 01-03 & Eletrificação 11-14)",
       btn_dossier: "Dossiê Executivo (PDF / Print)",
+      btn_lock: "Bloquear",
+
+      // Auth Gate (PT)
+      auth_title: "Acesso Corporativo Restrito",
+      auth_sub: "Diretoria Executiva da TCP & Comitê de Investimento da CMPort",
+      auth_pwd_label: "Senha de Acesso",
+      auth_pwd_placeholder: "Digite a senha de acesso...",
+      auth_btn: "Entrar no Dashboard",
+      auth_error: "Senha incorreta. Tente novamente.",
       tab_solutions: "As Três Soluções Estratégicas",
       tab_solutions_pill: "Comparativo Central",
       tab_benchmark: "Benchmark ZPMC & Impacto dos Geradores",
@@ -646,6 +664,15 @@ window.I18N = {
       board_sub: "董事會審批呈報 Rev 3.0",
       app_subtitle: "巴拉那瓜集裝箱碼頭 (TCP) • 全生命週期戰略分析 (10臺新購E-RTG、04-14處置、01-03備件保障及11-14電氣化)",
       btn_dossier: "執行檔案彙編 (PDF / 列印)",
+      btn_lock: "鎖定",
+
+      // Auth Gate (ZH)
+      auth_title: "企業內部受限訪問",
+      auth_sub: "TCP 執行董事會及招商局港口投資決策委員會專屬",
+      auth_pwd_label: "訪問授權密碼",
+      auth_pwd_placeholder: "請輸入訪問密碼...",
+      auth_btn: "進入決策儀表板",
+      auth_error: "密碼錯誤，請重新輸入。",
       tab_solutions: "三大戰略處置方案",
       tab_solutions_pill: "核心方案比選",
       tab_benchmark: "振華基準與發電機組影響",
