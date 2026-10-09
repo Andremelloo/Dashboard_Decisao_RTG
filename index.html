@@ -1,0 +1,940 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>TCP | CMPort - RTG Fleet Strategic Decision Dashboard (Replacement vs Retrofit)</title>
+  <link rel="stylesheet" href="styles.css">
+  <script src="chart.umd.min.js"></script>
+</head>
+<body>
+
+  <!-- Top Header -->
+  <header class="top-header">
+    <div class="header-container">
+      <div class="header-brand">
+        <div class="logo-badge">
+          <span class="badge-tcp">TCP</span>
+          <span class="badge-cmp">CMPort</span>
+        </div>
+        <div class="title-group">
+          <h1>
+            <span data-i18n="app_title">RTG Fleet Strategic Decision Dashboard</span>
+            <span style="font-size:0.75rem; background:rgba(16,185,129,0.2); color:#34d399; padding:2px 8px; border-radius:12px; border:1px solid rgba(16,185,129,0.3);" data-i18n="board_sub">
+              Board Submission Rev 3.0
+            </span>
+          </h1>
+          <p data-i18n="app_subtitle">Paranaguá Container Terminal • Strategic Life-Cycle Analysis (10 New E-RTGs, 04-14 Fleet, 01-03 Preservation & 11-14 Electrification)</p>
+        </div>
+      </div>
+      <div class="header-actions" style="display:flex; align-items:center; gap:0.75rem;">
+        <!-- 3-Language Selector (EN Default, PT, ZH Traditional) -->
+        <div class="lang-selector-group">
+          <button class="lang-btn active" data-lang="en" title="English (Default / Primary)">🇬🇧 EN</button>
+          <button class="lang-btn" data-lang="pt" title="Português (Brasil)">🇧🇷 PT</button>
+          <button class="lang-btn" data-lang="zh" title="繁體中文 (Traditional Chinese)">🇭🇰 繁中</button>
+        </div>
+        <button id="btn-open-report" class="btn btn-gold">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>
+          <span data-i18n="btn_dossier">Executive Dossier (PDF / Print)</span>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Navigation Tabs -->
+  <div class="nav-tabs-wrapper">
+    <nav class="nav-tabs">
+      <button class="tab-btn active" data-target="tab-solutions">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"></rect><rect x="14" y="3" width="7" height="7"></rect><rect x="14" y="14" width="7" height="7"></rect><rect x="3" y="14" width="7" height="7"></rect></svg>
+        <span data-i18n="tab_solutions">The Three Strategic Solutions</span>
+        <span class="badge-pill" data-i18n="tab_solutions_pill">Core Comparison</span>
+      </button>
+      <button class="tab-btn" data-target="tab-benchmark">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 20V10M12 20V4M6 20v-6"></path></svg>
+        <span data-i18n="tab_benchmark">ZPMC Benchmark & Genset Impact</span>
+        <span class="badge-pill" data-i18n="tab_benchmark_pill">Real Data</span>
+      </button>
+      <button class="tab-btn" data-target="tab-simulator">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="1" x2="12" y2="23"></line><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path></svg>
+        <span data-i18n="tab_simulator">Financial Simulator (LCC / TCO)</span>
+      </button>
+      <button class="tab-btn" data-target="tab-fleet">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path></svg>
+        <span data-i18n="tab_fleet">Full Fleet (RTG 01 to 41)</span>
+        <span class="badge-pill" data-i18n="tab_fleet_pill">40 Active Assets</span>
+      </button>
+      <button class="tab-btn" data-target="tab-kayo">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 14 14"></polyline></svg>
+        <span data-i18n="tab_kayo">Kayo Technical Matrix (Rev 1.0)</span>
+      </button>
+      <button class="tab-btn" data-target="tab-synergies">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M2 12h20M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path></svg>
+        <span data-i18n="tab_synergies">Heavy-Lift Synergies & CMP Timeline</span>
+      </button>
+    </nav>
+  </div>
+
+  <!-- Main Content Area -->
+  <main class="main-content">
+
+    <!-- KPI Banner (5 cards) -->
+    <section class="kpi-grid">
+      <div class="kpi-card blue">
+        <div class="kpi-header">
+          <span class="kpi-title" data-i18n="kpi_fleet_title">Operational Fleet</span>
+          <span class="kpi-icon">🏗️</span>
+        </div>
+        <div class="kpi-value" id="kpi-total-fleet" data-i18n="kpi_fleet_val">40 Active Assets</div>
+        <div class="kpi-subtitle" data-i18n="kpi_fleet_sub">Bays 01 to 41 (RTG 07 decommissioned)</div>
+      </div>
+
+      <div class="kpi-card green">
+        <div class="kpi-header">
+          <span class="kpi-title" data-i18n="kpi_zpmc_title">ZPMC 2024 Benchmark</span>
+          <span class="kpi-icon">⚡</span>
+        </div>
+        <div class="kpi-value" id="kpi-zpmc-bench">US$ 4.16 / h</div>
+        <div class="kpi-subtitle" data-i18n="kpi_zpmc_sub">2.8 yrs operating (Avg 671 h/month)</div>
+      </div>
+
+      <div class="kpi-card gold">
+        <div class="kpi-header">
+          <span class="kpi-title" data-i18n="kpi_cost_title">8-Month Maint. Cost (Jan-Aug/2026)</span>
+          <span class="kpi-icon">💰</span>
+        </div>
+        <div class="kpi-value" id="kpi-cost-8m">R$ 10.85M</div>
+        <div class="kpi-subtitle" data-i18n="kpi_cost_sub">Direct parts & materials (169,263 engine hrs)</div>
+      </div>
+
+      <div class="kpi-card purple">
+        <div class="kpi-header">
+          <span class="kpi-title" data-i18n="kpi_avg_title">Fleet Operating Cost Rate</span>
+          <span class="kpi-icon">⏱️</span>
+        </div>
+        <div class="kpi-value" id="kpi-avg-hour">R$ 64.09 / h</div>
+        <div class="kpi-subtitle" data-i18n="kpi_avg_sub">Weighted average per operating asset (40 cranes)</div>
+      </div>
+
+      <div class="kpi-card red">
+        <div class="kpi-header">
+          <span class="kpi-title" data-i18n="kpi_elect_title">Cost Reduction via Electrification</span>
+          <span class="kpi-icon">⚡</span>
+        </div>
+        <div class="kpi-value" id="kpi-lote10-impact" data-i18n="kpi_elect_val">-65% OPEX</div>
+        <div class="kpi-subtitle" data-i18n="kpi_elect_sub">Konecranes 11-14 drops from R$ 162/h to R$ 57/h</div>
+      </div>
+    </section>
+
+    <!-- ========================================== -->
+    <!-- TAB 1: AS TRÊS SOLUÇÕES ESTRATÉGICAS       -->
+    <!-- ========================================== -->
+    <div id="tab-solutions" class="tab-pane active">
+
+      <!-- Alert Box: Mandatory Overhaul for RTG 01-03 -->
+      <div class="donor-fleet-callout" style="border-color: rgba(245, 158, 11, 0.4); background: linear-gradient(135deg, rgba(245, 158, 11, 0.12) 0%, rgba(31, 44, 76, 0.95) 100%);">
+        <div class="donor-header">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="color:var(--cmp-gold);"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg>
+          <div>
+            <h3 style="color:var(--cmp-gold-light);" data-i18n="donor_alert_title">Mandatory Engineering Alert for Option to Retain RTGs 01 to 03 (25 Years)</h3>
+            <p style="font-size:0.85rem; color:var(--text-muted); margin-top:2px;" data-i18n="donor_alert_sub">
+              Unavoidable costs identified by maintenance: Double hoist gearboxes, trolley wheels/rails and NDT inspection total <strong>~R$ 730,000/crane (~R$ 2.2M total)</strong>
+            </p>
+          </div>
+        </div>
+        <div class="donor-steps-grid">
+          <div class="donor-step-card" style="border-left-color: var(--cmp-gold);">
+            <h4 data-i18n="donor_step1_title">1. Double Hoist Gearboxes</h4>
+            <p data-i18n="donor_step1_desc">Konecranes RTGs use 2 hoist gearboxes per machine (~R$ 180,000 each). Mandatory cost of R$ 360,000 per crane to avoid catastrophic drop risk over the rail track.</p>
+          </div>
+          <div class="donor-step-card" style="border-left-color: var(--cmp-gold);">
+            <h4 data-i18n="donor_step2_title">2. Trolley Wheels & Rail Overhaul</h4>
+            <p data-i18n="donor_step2_desc">Per TCP historical data, each trolley wheel costs R$ 48,964 to R$ 51,260 (full set = ~R$ 200,000). Combined with rail machining (~R$ 90,000), total is ~R$ 290,000 per crane.</p>
+          </div>
+          <div class="donor-step-card" style="border-left-color: var(--cmp-gold);">
+            <h4 data-i18n="donor_step3_title">3. Structural NDT & External Audit</h4>
+            <p data-i18n="donor_step3_desc">Non-destructive testing (ultrasound on structural welds) and external consulting mandated by CMP: ~R$ 80,000 per crane (~R$ 240,000 for the 3 RTGs).</p>
+          </div>
+        </div>
+        <div style="margin-top:1rem; padding-top:0.75rem; border-top:1px solid rgba(255,255,255,0.08); display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:0.5rem;">
+          <span style="font-size:0.85rem; color:var(--text-muted);" data-i18n="donor_sum_label">
+            <strong>Consolidated Overhaul Cost (Items 1 + 2 + 3):</strong> R$ 730,000/crane
+          </span>
+          <span style="font-size:1rem; font-weight:800; color:var(--cmp-gold-light);" data-i18n="donor_sum_val">
+            Total for 3 RTGs (01, 02 and 03): ~R$ 2,190,000
+          </span>
+        </div>
+      </div>
+
+      <!-- Solutions Grid (3 Columns) -->
+      <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(360px, 1fr)); gap: 1.5rem; margin-bottom: 2rem;">
+
+        <!-- SOLUÇÃO 1 -->
+        <div class="solution-card sol-recommended" style="border-color: rgba(56, 189, 248, 0.4);">
+          <div class="solution-header">
+            <span class="solution-badge" style="background:rgba(56,189,248,0.2); color:var(--tcp-blue-light); border:1px solid rgba(56,189,248,0.4);" data-i18n="sol1_badge">
+              Solution 1: Bays 04-14 + Spare Bank for 01-03
+            </span>
+            <h2 class="solution-title" style="font-size:1.15rem;" data-i18n="sol1_title">10 New E-RTGs (04 to 14) + Preserve 01-03 with Donor Parts from 04-06</h2>
+            <p class="solution-desc" data-i18n="sol1_desc">
+              Procures 10 new 1-over-6 E-RTGs on joint STS vessel. Disassembles 04-06 for spare parts to 01-03, incurring R$ 2.2M gearbox & wheel overhauls on 01-03.
+            </p>
+          </div>
+
+          <div class="solution-body">
+            <div class="solution-metrics-row">
+              <div class="metric-item">
+                <span class="metric-label" data-i18n="sol1_capex_label">Net CAPEX</span>
+                <span class="metric-val" style="color:var(--tcp-blue-light);" data-i18n="sol1_capex_val">US$ 20.0M</span>
+              </div>
+              <div class="metric-item">
+                <span class="metric-label" data-i18n="sol1_metric2_label">01-03 Life Extension</span>
+                <span class="metric-val gold" data-i18n="sol1_metric2_val">5 to 8 Years</span>
+              </div>
+              <div class="metric-item">
+                <span class="metric-label" data-i18n="sol1_metric3_label">Capital Cost / Yr</span>
+                <span class="metric-val" style="color:var(--tcp-blue-light);" data-i18n="sol1_metric3_val">US$ 91k / yr</span>
+              </div>
+            </div>
+
+            <ul class="feature-list">
+              <li class="feature-item">
+                <span class="feature-icon check">✓</span>
+                <span data-i18n="sol1_f1"><strong>STS Naval Synergy:</strong> Shared freight on vessel with 2 STSs (ZPMC/SANY), saving US$ 4.0M.</span>
+              </li>
+              <li class="feature-item">
+                <span class="feature-icon check">✓</span>
+                <span data-i18n="sol1_f2"><strong>Parts Bank:</strong> Teardown of 04-06 supplies inventory for 01-03 on the rail line.</span>
+              </li>
+              <li class="feature-item">
+                <span class="feature-icon warn">!</span>
+                <span data-i18n="sol1_f3"><strong>Forced Cost on 01-03:</strong> Requires structural inspection and renewal of double gearboxes, wheels and rails (~R$ 2.2M total).</span>
+              </li>
+              <li class="feature-item">
+                <span class="feature-icon check">✓</span>
+                <span data-i18n="sol1_f4"><strong>Yard Density:</strong> +20% storage capacity (1-over-6 on 10 new cranes).</span>
+              </li>
+            </ul>
+          </div>
+        </div>
+
+        <!-- SOLUÇÃO 2 (ESTRATÉGICA E RECOMENDADA) -->
+        <div class="solution-card sol-recommended" style="border-color: rgba(16, 185, 129, 0.6); background: linear-gradient(180deg, rgba(31, 44, 76, 0.95) 0%, rgba(16, 185, 129, 0.08) 100%);">
+          <div class="solution-header">
+            <span class="solution-badge badge-recommended" data-i18n="sol2_badge">
+              ⭐ Solution 2 (Recommended - TCP Optimal Route)
+            </span>
+            <h2 class="solution-title" style="font-size:1.15rem;" data-i18n="sol2_title">10 New E-RTGs (Replaces Block 01-10) + Electrify & Preserve RTGs 11 to 14</h2>
+            <p class="solution-desc" data-i18n="sol2_desc">
+              Eliminates 100% of cranes older than 21 years (01 to 10). Preserves RTGs 11 to 14 (Konecranes 2008), electrifying them and wiping out genset maintenance costs!
+            </p>
+          </div>
+
+          <div class="solution-body">
+            <div class="solution-metrics-row">
+              <div class="metric-item">
+                <span class="metric-label" data-i18n="sol2_capex_label">Net CAPEX</span>
+                <span class="metric-val green" data-i18n="sol2_capex_val">US$ 20.8M</span>
+                <span style="font-size:0.65rem; color:var(--text-dim);" data-i18n="sol2_capex_sub">(Includes 11-14 electrification)</span>
+              </div>
+              <div class="metric-item">
+                <span class="metric-label" data-i18n="sol2_metric2_label">11-14 Age</span>
+                <span class="metric-val green" data-i18n="sol2_metric2_val">18 Yrs (2008)</span>
+                <span style="font-size:0.65rem; color:var(--text-dim);" data-i18n="sol2_metric2_sub">(7 yrs younger than 01-03)</span>
+              </div>
+              <div class="metric-item">
+                <span class="metric-label" data-i18n="sol2_metric3_label">Post-Elec. Cost</span>
+                <span class="metric-val green" data-i18n="sol2_metric3_val">R$ 57.03 / h</span>
+                <span style="font-size:0.65rem; color:var(--accent-green);" data-i18n="sol2_metric3_sub">(-65% reduction on 11-14)</span>
+              </div>
+            </div>
+
+            <ul class="feature-list">
+              <li class="feature-item">
+                <span class="feature-icon check">✓</span>
+                <span data-i18n="sol2_f1"><strong>Eliminates 25-Year Fatigue Risk:</strong> Discards RTGs 01-06 and 08-10. Cancels ~R$ 2.2M forced spend on 01-03!</span>
+              </li>
+              <li class="feature-item">
+                <span class="feature-icon check">✓</span>
+                <span data-i18n="sol2_f2"><strong>Smart Electrification (11 to 14):</strong> Current R$ 162.93/h cost stems from worn gensets. Electrification drops cost to R$ 57.03/h!</span>
+              </li>
+              <li class="feature-item">
+                <span class="feature-icon check">✓</span>
+                <span data-i18n="sol2_f3"><strong>Superior Reliability Bridge:</strong> 2008 structures are sound (score 3.5), operating as a proven bridge.</span>
+              </li>
+              <li class="feature-item">
+                <span class="feature-icon check">✓</span>
+                <span data-i18n="sol2_f4"><strong>Total ZPMC/SANY Synergy:</strong> 10 new 1-over-6 RTGs on STS heavy-lift vessel (+20% yard density).</span>
+              </li>
+              <li class="feature-item" style="background:rgba(245, 158, 11, 0.1); padding:0.75rem; border-radius:8px; border-left:3px solid var(--cmp-gold); margin-top:0.35rem;">
+                <span class="feature-icon warn" style="color:var(--cmp-gold);">📌</span>
+                <span style="font-size:0.8rem; color:var(--text-main); line-height:1.5;" data-i18n="sol2_guideline">
+                  <strong>Guideline for Next Investment Cycle (Konecranes 11 to 20):</strong> Konecranes assets have the highest maintenance cost in TCP (R$ 5.57M in 8 months, 51.4% of total TCP). Audited parts show 100% of TR-11-2 brakes (R$ 754.9k) and 100% of rectifiers (R$ 345.8k) are concentrated in this lot. Electrification stops diesel engine costs immediately, but we formally recommend scheduling full replacement of RTGs 11 to 14 in the subsequent acquisition cycle!
+                </span>
+              </li>
+            </ul>
+          </div>
+        </div>
+
+        <!-- SOLUÇÃO 3 (RETROFIT CONFORME CMP) -->
+        <div class="solution-card sol-alternative">
+          <div class="solution-header">
+            <span class="solution-badge badge-alternative" data-i18n="sol3_badge">
+              ⚠️ Solution 3: Standard CMPort Retrofit
+            </span>
+            <h2 class="solution-title" style="font-size:1.15rem;" data-i18n="sol3_title">Full Overhaul of Block 04-14 under CMPort Standard (QT/CMP 029)</h2>
+            <p class="solution-desc" data-i18n="sol3_desc">
+              Structural and electrical overhaul of 10 aged cranes under CMP rules, keeping RTGs 01-03 in operation with separate commercial parts procurement.
+            </p>
+          </div>
+
+          <div class="solution-body">
+            <div class="solution-metrics-row">
+              <div class="metric-item">
+                <span class="metric-label" data-i18n="sol3_capex_label">Retrofit CAPEX</span>
+                <span class="metric-val gold" data-i18n="sol3_capex_val">US$ 13.5M</span>
+              </div>
+              <div class="metric-item">
+                <span class="metric-label" data-i18n="sol3_metric2_label">Residual Life</span>
+                <span class="metric-val red" data-i18n="sol3_metric2_val">5 to 8 Years</span>
+              </div>
+              <div class="metric-item">
+                <span class="metric-label" data-i18n="sol3_metric3_label">Capital Cost / Yr</span>
+                <span class="metric-val red" data-i18n="sol3_metric3_val">US$ 225k / yr</span>
+              </div>
+            </div>
+
+            <ul class="feature-list">
+              <li class="feature-item">
+                <span class="feature-icon cross">✗</span>
+                <span data-i18n="sol3_f1"><strong>Short Life Extension:</strong> Only 5 to 8 years before fatigue and drive obsolescence recur.</span>
+              </li>
+              <li class="feature-item">
+                <span class="feature-icon cross">✗</span>
+                <span data-i18n="sol3_f2"><strong>High Annual Capital Cost:</strong> US$ 225k/yr per machine (more than double the new crane cost!).</span>
+              </li>
+              <li class="feature-item">
+                <span class="feature-icon cross">✗</span>
+                <span data-i18n="sol3_f3"><strong>Forced Cost on 01-03:</strong> Still requires R$ 2.2M on hoist gearboxes/wheels for 01-03.</span>
+              </li>
+              <li class="feature-item">
+                <span class="feature-icon cross">✗</span>
+                <span data-i18n="sol3_f4"><strong>Misses STS Vessel Synergy:</strong> Zero freight savings; loses 20% yard growth capacity.</span>
+              </li>
+            </ul>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Charts Section: LCC Horizon & Capital Cost per Year -->
+      <div class="charts-grid">
+        <div class="chart-card">
+          <div class="chart-header">
+            <div class="chart-title-group">
+              <h3>Custo Total Acumulado (LCC / TCO - 20 Anos)</h3>
+              <p>Comparativo das 3 soluções estratégicas frente ao cenário As-Is (Sem Ação)</p>
+            </div>
+          </div>
+          <div class="chart-container">
+            <canvas id="chart-lcc-horizon"></canvas>
+          </div>
+        </div>
+
+        <div class="chart-card">
+          <div class="chart-header">
+            <div class="chart-title-group">
+              <h3>CAPEX Anualizado por Ano de Vida Útil Residual (US$/Ano)</h3>
+              <p>Por que as soluções com guindastes novos custam metade do retrofit por ano útil</p>
+            </div>
+          </div>
+          <div class="chart-container">
+            <canvas id="chart-capital-annual"></canvas>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- ============================================================== -->
+    <!-- TAB 2: BENCHMARK ZPMC & IMPACTO DOS GRUPOS GERADORES           -->
+    <!-- ============================================================== -->
+    <div id="tab-benchmark" class="tab-pane">
+
+      <!-- Executive Highlight: ZPMC Empirical Benchmark -->
+      <div class="donor-fleet-callout" style="background: linear-gradient(135deg, rgba(16, 185, 129, 0.15) 0%, rgba(31, 44, 76, 0.95) 100%); border-color: rgba(16, 185, 129, 0.4);">
+        <div class="donor-header">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="color:var(--accent-green);"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+          <div>
+            <h3 style="color:#34d399;" data-i18n="bench_title">ZPMC Benchmark & Critical Diesel Genset Impact</h3>
+            <p style="font-size:0.85rem; color:var(--text-muted); margin-top:2px;" data-i18n="bench_sub">
+              Actual maintenance performance (Jan-Aug/2026) proving diesel genset deterioration in older units.
+            </p>
+          </div>
+        </div>
+        <div class="donor-steps-grid">
+          <div class="donor-step-card" style="border-left-color: var(--accent-green);">
+            <h4>Custo Horário Recorde</h4>
+            <div style="font-size:1.6rem; font-weight:800; color:#34d399; margin:4px 0;">R$ 22,90 / h</div>
+            <p>Quase 3x menor que a média geral da frota (R$ 64,09/h) e <strong>7x menor que o pico dos antigos a diesel (R$ 162,93/h)</strong>.</p>
+          </div>
+          <div class="donor-step-card" style="border-left-color: var(--accent-green);">
+            <h4>Intensidade de Operação</h4>
+            <div style="font-size:1.6rem; font-weight:800; color:#34d399; margin:4px 0;">671,6 h / mês</div>
+            <p>59.101 horas acumuladas em 8 meses. Os novos guindastes puxam a produtividade do terminal com disponibilidade >95%.</p>
+          </div>
+          <div class="donor-step-card" style="border-left-color: var(--accent-green);">
+            <h4>Gasto Total em 8 Meses</h4>
+            <div style="font-size:1.6rem; font-weight:800; color:#34d399; margin:4px 0;">R$ 1,35M (11 RTGs)</div>
+            <p>Os 11 guindastes ZPMC juntos gastaram apenas R$ 1,35M, enquanto <strong>apenas 2 guindastes antigos (RTG 11 e 12) sozinhos gastaram R$ 1,56M</strong>!</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Charts Row: ZPMC Benchmark & Genset Impact -->
+      <div class="charts-grid">
+        <div class="chart-card">
+          <div class="chart-header">
+            <div class="chart-title-group">
+              <h3>Custo Horário Real por Classe de Ativos (R$/h)</h3>
+              <p>Evidência empírica: Por que a aquisição de novos e a eletrificação são a chave de redução de custos</p>
+            </div>
+          </div>
+          <div class="chart-container">
+            <canvas id="chart-zpmc-benchmark"></canvas>
+          </div>
+        </div>
+
+        <div class="chart-card">
+          <div class="chart-header">
+            <div class="chart-title-group">
+              <h3>Decomposição de Custos nos RTGs 11 a 14 (Konecranes 2008)</h3>
+              <p>Como a eletrificação elimina a maior fonte de despesas (Grupo Gerador Diesel)</p>
+            </div>
+          </div>
+          <div class="chart-container">
+            <canvas id="chart-genset-impact"></canvas>
+          </div>
+        </div>
+      </div>
+
+      <!-- Detail Card: Eletrificação RTG 11 a 14 -->
+      <div class="table-card" style="padding:1.5rem;">
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:0.75rem; flex-wrap:wrap; gap:0.5rem;">
+          <h3 style="color:var(--tcp-blue-light);">Análise Técnica Detalhada: Eletrificação dos RTGs 11 a 14 (Konecranes 2008) & Próxima Substituição</h3>
+          <span style="font-size:0.75rem; background:rgba(56,189,248,0.15); color:var(--tcp-blue-light); padding:3px 10px; border-radius:12px; border:1px solid rgba(56,189,248,0.3);">
+            Fonte Oficial: Relatório de Custos Jan-Ago/2026 da TCP (Custos_01_08_2026)
+          </span>
+        </div>
+        <p style="font-size:0.88rem; color:var(--text-main); line-height:1.6;">
+          Nos 8 primeiros meses de 2026, conforme dados auditados do relatório de custos, os guindastes RTG 11, 12, 13 e 14 consumiram <strong>R$ 2.623.218,21</strong> em manutenção direta para 16.100 horas trabalhadas (média de <strong>R$ 162,93/h</strong>).<br>
+          A análise minuciosa das ordens de serviço comprova que <strong>mais de 65% dessas despesas decorrem unicamente do grupo gerador térmico (genset Cummins, motores de partida Delco 7.5kW, radiadores, bombas de injeção e trocas contínuas de óleo 15W40)</strong>.
+        </p>
+        
+        <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(300px, 1fr)); gap:1rem; margin-top:1rem;">
+          <div style="background:rgba(11, 19, 43, 0.7); padding:1rem; border-radius:8px; border-left:3px solid var(--accent-green);">
+            <h4 style="color:#34d399; font-size:0.9rem; margin-bottom:0.35rem;">1. Benefício Imediato da Eletrificação (Fase Atual)</h4>
+            <p style="font-size:0.82rem; color:var(--text-muted); line-height:1.5;">
+              Elimina 100% dos custos de gerador e queima de diesel. O custo horário cai de <strong>R$ 162,93/h para ~R$ 57,00/h</strong> (economia de <strong>>R$ 1,7M/ano</strong>). Por serem de 2008 (18 anos), possuem 7 anos a menos de fadiga metálica do que os RTGs de 2001, entregando confiabilidade superior à dos RTGs 01-03.
+            </p>
+          </div>
+
+          <div style="background:rgba(11, 19, 43, 0.7); padding:1rem; border-radius:8px; border-left:3px solid var(--cmp-gold);">
+            <h4 style="color:var(--cmp-gold-light); font-size:0.9rem; margin-bottom:0.35rem;">2. Ponto de Atenção: Problemas de Freio & Retificador</h4>
+            <p style="font-size:0.82rem; color:var(--text-muted); line-height:1.5;">
+              O relatório Jan-Ago/2026 registra que os RTGs 11 a 14 sofrem com queimas crônicas de <strong>bobinas de freio Konecranes (R$ 4.796 cada)</strong>, falhas em <strong>módulos retificadores Konecranes/RGM100 (R$ 16.924 no RTG 713)</strong> e <strong>freios de gantry (R$ 8.114 a R$ 16.228 no RTG 712 e 714)</strong>.
+            </p>
+          </div>
+        </div>
+
+        <div style="background:rgba(245, 158, 11, 0.08); padding:0.85rem; border-radius:8px; border:1px solid rgba(245,158,11,0.25); margin-top:1rem;">
+          <strong style="color:var(--cmp-gold-light); font-size:0.85rem;">📌 Recomendação Estratégica da Coordenação de Manutenção:</strong>
+          <span style="font-size:0.82rem; color:var(--text-main);">
+            A eletrificação dos RTGs 11 a 14 deve ser tratada como a <strong>ponte operacional ideal para os próximos 5 a 6 anos</strong>. No entanto, devido à fadiga residual dos subsistemas elétricos de frenagem e retificação, <strong>os RTGs 11 a 14 devem ser posicionados formalmente no topo da fila prioritária para substituição por guindastes 100% novos na próxima oportunidade / expansão do terminal!</strong>
+          </span>
+        </div>
+
+        <!-- Tabela Analítica: Somatória Konecranes RTG 11 ao 20 -->
+        <div style="margin-top:1.5rem; border-top:1px solid rgba(255,255,255,0.08); padding-top:1rem;">
+          <h4 style="color:var(--text-main); font-size:0.95rem; margin-bottom:0.4rem;" data-i18n="bench_table_title">
+            Audited 8-Month Parts Breakdown: Konecranes Lot 11 to 20
+          </h4>
+          <p style="font-size:0.8rem; color:var(--text-muted); margin-bottom:0.75rem; line-height:1.5;" data-i18n="bench_audit_note">
+            Proves that Konecranes units concentrate R$ 5,572,510.75 (51.4% of all TCP maintenance cost) and that 43.5% of this lot (R$ 2.42M) stems strictly from Diesel Gensets, TR-11-2 Brakes and Rectifier Modules.
+          </p>
+          <div class="table-responsive">
+            <table>
+              <thead>
+                <tr>
+                  <th>RTG</th>
+                  <th>Tag</th>
+                  <th>Ano</th>
+                  <th>Horas Trab. (Jan-Ago)</th>
+                  <th>Custo Total Jan-Ago</th>
+                  <th>Custo / Hora</th>
+                  <th>Grupo Gerador (Diesel/Óleo/Injetor)</th>
+                  <th>Freios, Bobinas & Retificadores</th>
+                  <th>Soma Foco (Gerador + Freio)</th>
+                  <th>% Foco / Custo</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr><td><strong>RTG 11</strong></td><td>#711</td><td>2008</td><td><span class="badge-tag blue">4.174 h</span></td><td>R$ 812.764,19</td><td><strong style="color:#ef4444;">R$ 194,72 / h</strong></td><td>R$ 225.672,24</td><td>R$ 317.439,50</td><td><strong style="color:#34d399;">R$ 543.111,74</strong></td><td><span class="badge-tag red">66,8%</span></td></tr>
+                <tr><td><strong>RTG 12</strong></td><td>#712</td><td>2008</td><td><span class="badge-tag blue">4.048 h</span></td><td>R$ 751.472,60</td><td><strong style="color:#ef4444;">R$ 185,64 / h</strong></td><td>R$ 148.921,22</td><td>R$ 145.129,66</td><td><strong style="color:#34d399;">R$ 294.050,88</strong></td><td><span class="badge-tag gold">39,1%</span></td></tr>
+                <tr><td><strong>RTG 13</strong></td><td>#713</td><td>2008</td><td><span class="badge-tag blue">4.342 h</span></td><td>R$ 682.109,46</td><td><strong style="color:#f59e0b;">R$ 157,10 / h</strong></td><td>R$ 55.631,12</td><td>R$ 177.656,47</td><td><strong style="color:#34d399;">R$ 233.287,59</strong></td><td><span class="badge-tag gold">34,2%</span></td></tr>
+                <tr><td><strong>RTG 14</strong></td><td>#714</td><td>2008</td><td><span class="badge-tag blue">3.536 h</span></td><td>R$ 376.871,96</td><td><strong style="color:#f59e0b;">R$ 106,58 / h</strong></td><td>R$ 43.880,17</td><td>R$ 128.670,38</td><td><strong style="color:#34d399;">R$ 172.550,55</strong></td><td><span class="badge-tag gold">45,8%</span></td></tr>
+                <tr><td><strong>RTG 15</strong></td><td>#715</td><td>2011</td><td><span class="badge-tag blue">4.737 h</span></td><td>R$ 475.204,90</td><td><strong>R$ 100,32 / h</strong></td><td>R$ 68.628,19</td><td>R$ 117.017,31</td><td><strong style="color:#34d399;">R$ 185.645,50</strong></td><td><span class="badge-tag gold">39,1%</span></td></tr>
+                <tr><td><strong>RTG 16</strong></td><td>#716</td><td>2011</td><td><span class="badge-tag blue">4.313 h</span></td><td>R$ 466.594,17</td><td><strong>R$ 108,18 / h</strong></td><td>R$ 135.735,21</td><td>R$ 63.963,08</td><td><strong style="color:#34d399;">R$ 199.698,29</strong></td><td><span class="badge-tag gold">42,8%</span></td></tr>
+                <tr><td><strong>RTG 17</strong></td><td>#717</td><td>2011</td><td><span class="badge-tag blue">3.203 h</span></td><td>R$ 610.542,61</td><td><strong style="color:#ef4444;">R$ 190,62 / h</strong></td><td>R$ 48.811,50</td><td>R$ 140.648,65</td><td><strong style="color:#34d399;">R$ 189.460,15</strong></td><td><span class="badge-tag gold">31,0%</span></td></tr>
+                <tr><td><strong>RTG 18</strong></td><td>#718</td><td>2011</td><td><span class="badge-tag blue">3.241 h</span></td><td>R$ 769.620,22</td><td><strong style="color:#ef4444;">R$ 237,46 / h</strong></td><td>R$ 97.001,40</td><td>R$ 233.908,84</td><td><strong style="color:#34d399;">R$ 330.910,24</strong></td><td><span class="badge-tag gold">43,0%</span></td></tr>
+                <tr><td><strong>RTG 19</strong></td><td>#719</td><td>2011</td><td><span class="badge-tag blue">4.547 h</span></td><td>R$ 452.801,73</td><td><strong>R$ 99,58 / h</strong></td><td>R$ 70.005,61</td><td>R$ 201.478,89</td><td><strong style="color:#34d399;">R$ 271.484,50</strong></td><td><span class="badge-tag red">60,0%</span></td></tr>
+                <tr><td><strong>RTG 20</strong></td><td>#720</td><td>2011</td><td><span class="badge-tag" style="background:rgba(148,163,184,0.2); color:#94a3b8;">0 h*</span></td><td>R$ 174.533,71</td><td><span style="color:#94a3b8;">--</span></td><td>R$ 2.784,26</td><td>R$ 0,00</td><td><strong style="color:#34d399;">R$ 2.784,26</strong></td><td><span class="badge-tag blue">1,6%</span></td></tr>
+                <tr style="background:rgba(2,132,199,0.18); font-weight:800; border-top:2px solid var(--tcp-blue);">
+                  <td colspan="3"><strong>TOTAL KONECRANES (11 AO 20)</strong></td>
+                  <td style="color:#38bdf8;"><strong>36.141 h</strong></td>
+                  <td style="color:#38bdf8;">R$ 5.572.515,55 (51,4% TCP)</td>
+                  <td style="color:#ef4444;"><strong>R$ 154,19 / h</strong></td>
+                  <td style="color:#fbbf24;">R$ 897.070,92</td>
+                  <td style="color:#fbbf24;">R$ 1.525.912,78</td>
+                  <td style="color:#34d399;">R$ 2.422.983,70</td>
+                  <td><span class="badge-tag green">43,5%</span></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- ========================================== -->
+    <!-- TAB 3: SIMULADOR FINANCEIRO LCC / TCO      -->
+    <!-- ========================================== -->
+    <div id="tab-simulator" class="tab-pane">
+      <div class="simulator-panel">
+        <div class="chart-title-group">
+          <h2 data-i18n="sim_title">Parametric Financial Decision Simulator (LCC & Sensitivity)</h2>
+          <p data-i18n="sim_sub">Adjust market and capex parameters to test financial robustness</p>
+        </div>
+
+        <div class="simulator-controls">
+          <div class="control-group">
+            <label>
+              <span data-i18n="param_new_capex">New E-RTG Unit CAPEX (US$ M):</span>
+              <span id="sim-val-capex-new" class="slider-val">$2.40M</span>
+            </label>
+            <input type="range" id="input-capex-new" min="1.8" max="3.2" step="0.1" value="2.4">
+            <small style="color:var(--text-dim);">Preço de mercado ZPMC/SANY 1-over-6 E-RTG</small>
+          </div>
+
+          <div class="control-group">
+            <label>
+              <span data-i18n="param_retro_capex">Retrofit Unit CAPEX (US$ M):</span>
+              <span id="sim-val-capex-retro" class="slider-val">$1.35M</span>
+            </label>
+            <input type="range" id="input-capex-retro" min="0.8" max="1.8" step="0.05" value="1.35">
+            <small style="color:var(--text-dim);">Reforma estrutural + Eletrificação norma CMP</small>
+          </div>
+
+          <div class="control-group">
+            <label>
+              <span data-i18n="param_freight">STS Vessel Freight Savings (US$ M):</span>
+              <span id="sim-val-freight" class="slider-val">$4.0M</span>
+            </label>
+            <input type="range" id="input-freight" min="1.5" max="6.0" step="0.5" value="4.0">
+            <small style="color:var(--text-dim);">Sinergia de viagem compartilhada ZPMC/SANY</small>
+          </div>
+
+          <div class="control-group">
+            <label>
+              <span data-i18n="param_horizon">Evaluation Horizon (Years):</span>
+              <span id="sim-val-horizon" class="slider-val">20 Anos</span>
+            </label>
+            <input type="range" id="input-horizon" min="5" max="25" step="1" value="20">
+            <small style="color:var(--text-dim);">Prazo total de análise de ciclo de vida</small>
+          </div>
+        </div>
+
+        <div class="simulator-results">
+          <div class="sim-result-box">
+            <span class="label" data-i18n="card_sol1_capex">Solution 1 Net CAPEX</span>
+            <div id="res-sol1-capex" class="val" style="color:var(--tcp-blue-light);">$20,000,000</div>
+          </div>
+          <div class="sim-result-box">
+            <span class="label" data-i18n="card_sol2_capex">Solution 2 Net CAPEX (Optimal)</span>
+            <div id="res-sol2-capex" class="val" style="color:var(--accent-green);">$20,800,000</div>
+          </div>
+          <div class="sim-result-box">
+            <span class="label" data-i18n="card_sol3_capex">Solution 3 CAPEX (CMP Retrofit)</span>
+            <div id="res-sol3-capex" class="val" style="color:var(--cmp-gold);">$13,500,000</div>
+          </div>
+          <div class="sim-result-box">
+            <span class="label" data-i18n="card_annual_cap">Capital Cost / Yr (Sol 2)</span>
+            <div id="res-sol2-ann-cap" class="val" style="color:var(--accent-green);">$94,545 / ano</div>
+          </div>
+          <div class="sim-result-box" style="border:1px solid rgba(16,185,129,0.3); background:rgba(16,185,129,0.06);">
+            <span class="label" data-i18n="card_net_savings">Net LCC Savings vs Retrofit</span>
+            <div id="res-total-savings" class="val" style="color:var(--accent-green);">$24,500,000</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ========================================== -->
+    <!-- TAB 4: FROTA COMPLETA (RTG 01 AO 41)       -->
+    <!-- ========================================== -->
+    <div id="tab-fleet" class="tab-pane">
+
+      <!-- Charts Row -->
+      <div class="charts-grid">
+        <div class="chart-card">
+          <div class="chart-header">
+            <div class="chart-title-group">
+              <h3>Top 10 Guindastes com Maior Custo Horário (R$/h)</h3>
+              <p>Destaque em amarelo para RTG 11 a 14 (impacto do gerador) e vermelho para frota 2001-2005</p>
+            </div>
+          </div>
+          <div class="chart-container">
+            <canvas id="chart-hourly-cost"></canvas>
+          </div>
+        </div>
+
+        <div class="chart-card">
+          <div class="chart-header">
+            <div class="chart-title-group">
+              <h3>Matriz de Subsistemas Kayo (Média por Lote)</h3>
+              <p>Condição técnica comparada dos subsistemas (1 = Crítico / 5 = Excelente)</p>
+            </div>
+          </div>
+          <div class="chart-container">
+            <canvas id="chart-subsystems-radar"></canvas>
+          </div>
+        </div>
+      </div>
+
+      <!-- Fleet Table -->
+      <div class="table-card">
+        <div class="table-header">
+          <div>
+            <h3 data-i18n="fleet_title">Complete RTG Fleet Asset Register (RTGs 01 to 41)</h3>
+            <p style="font-size:0.8rem; color:var(--text-muted);" data-i18n="fleet_sub">
+              Detailed operational status, age, operating hours, and 8-month maintenance spend
+            </p>
+          </div>
+          <div class="table-filter-group">
+            <input type="text" id="fleet-search" class="search-input" placeholder="Search RTG, Tag or Model...">
+            <select id="fleet-filter-model" class="select-filter">
+              <option value="ALL">All Manufacturers</option>
+              <option value="KoneCranes">KoneCranes</option>
+              <option value="Kalmar">Kalmar</option>
+              <option value="ZMPC">ZMPC</option>
+            </select>
+            <select id="fleet-filter-lot" class="select-filter">
+              <option value="ALL">All Batches</option>
+              <option value="01-03">RTG 01 to 03 (Rail E-RTG)</option>
+              <option value="04-06">RTG 04 to 06 (Konecranes 2001)</option>
+              <option value="08-10">RTG 08 to 10 (Kalmar 2004/05)</option>
+              <option value="11-14">RTG 11 to 14 (Konecranes 2008)</option>
+              <option value="15-30">RTG 15 to 30 (Mid-Life)</option>
+              <option value="31-41">RTG 31 to 41 (ZPMC 2024)</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="table-responsive">
+          <table>
+            <thead>
+              <tr>
+                <th data-i18n="th_rtg">RTG</th>
+                <th data-i18n="th_tag">Tag</th>
+                <th data-i18n="th_mfg">Manufacturer</th>
+                <th data-i18n="th_age">Age / Year</th>
+                <th>Energy Source</th>
+                <th data-i18n="th_hours">Hours Jan-Aug</th>
+                <th data-i18n="th_cost_hour">Hourly Cost</th>
+                <th data-i18n="th_total_cost">Total Cost</th>
+                <th data-i18n="th_action">Strategic Directive</th>
+              </tr>
+            </thead>
+            <tbody id="fleet-table-body">
+              <!-- Dynamically populated -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- ========================================== -->
+    <!-- TAB 5: MATRIZ TÉCNICA KAYO (REV 1.0)       -->
+    <!-- ========================================== -->
+    <div id="tab-kayo" class="tab-pane">
+      <!-- Header de Auditoria & Governança CMPort -->
+      <div style="background:linear-gradient(135deg, rgba(28,37,65,0.95), rgba(15,23,42,0.95)); border:1px solid var(--border-color); border-radius:var(--radius-md); padding:1.25rem 1.5rem; margin-bottom:1.5rem;">
+        <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:1rem;">
+          <div>
+            <div style="display:flex; align-items:center; gap:0.5rem; margin-bottom:0.4rem;">
+              <span class="badge-tag green" style="font-weight:700; font-size:0.75rem;" data-i18n="kayo_badge_complete">✓ 100% COMPLETED IN EXCEL</span>
+              <span class="badge-tag blue" style="font-weight:700; font-size:0.75rem;" data-i18n="kayo_badge_subsystems">110 / 110 SUBSYSTEMS "COMPLETE"</span>
+              <span class="badge-tag gold" style="font-weight:700; font-size:0.75rem;" data-i18n="kayo_badge_norm">CMPORT STANDARD QT/CMP 029</span>
+            </div>
+            <h2 style="font-size:1.5rem; font-weight:800; color:var(--text-main); margin-bottom:0;" data-i18n="kayo_main_title">
+              Subsystems Technical Assessment Matrix (Kayo Szatkovski Engineering)
+            </h2>
+          </div>
+        </div>
+
+        <!-- 4 Cards Resumo Executivo da Frota -->
+        <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(240px, 1fr)); gap:1rem; margin-top:1.25rem;">
+          <div style="background:rgba(255,255,255,0.03); border:1px solid rgba(255,255,255,0.06); border-radius:var(--radius-sm); padding:0.85rem 1rem;">
+            <div style="font-size:0.75rem; color:var(--text-dim); text-transform:uppercase;" data-i18n="kayo_kpi1_title">Audited Scope</div>
+            <div style="font-size:1.4rem; font-weight:800; color:var(--text-main); margin:0.2rem 0;" data-i18n="kayo_kpi1_val">11 RTGs / 110 Subs.</div>
+            <div style="font-size:0.78rem; color:var(--accent-green);" data-i18n="kayo_kpi1_sub">100% populated with data & evidence</div>
+          </div>
+          <div style="background:rgba(255,255,255,0.03); border:1px solid rgba(239,68,68,0.2); border-left:4px solid var(--accent-red); border-radius:var(--radius-sm); padding:0.85rem 1rem;">
+            <div style="font-size:0.75rem; color:var(--text-dim); text-transform:uppercase;" data-i18n="kayo_kpi2_title">RTG 04 to 06 (25 Yrs)</div>
+            <div style="font-size:1.4rem; font-weight:800; color:var(--accent-red); margin:0.2rem 0;" data-i18n="kayo_kpi2_val">Avg 2.1 / 5.0</div>
+            <div style="font-size:0.78rem; color:var(--text-muted);" data-i18n="kayo_kpi2_sub">Cannibalize: saves 01-03 without spending R$ 2.2M</div>
+          </div>
+          <div style="background:rgba(255,255,255,0.03); border:1px solid rgba(245,158,11,0.2); border-left:4px solid var(--cmp-gold); border-radius:var(--radius-sm); padding:0.85rem 1rem;">
+            <div style="font-size:0.75rem; color:var(--text-dim); text-transform:uppercase;" data-i18n="kayo_kpi3_title">RTG 08 to 10 (22 Yrs)</div>
+            <div style="font-size:1.4rem; font-weight:800; color:var(--cmp-gold); margin:0.2rem 0;" data-i18n="kayo_kpi3_val">Avg 2.1 / 5.0</div>
+            <div style="font-size:0.78rem; color:var(--text-muted);" data-i18n="kayo_kpi3_sub">Full replacement with new 1-over-6 E-RTGs</div>
+          </div>
+          <div style="background:rgba(255,255,255,0.03); border:1px solid rgba(16,185,129,0.2); border-left:4px solid var(--accent-green); border-radius:var(--radius-sm); padding:0.85rem 1rem;">
+            <div style="font-size:0.75rem; color:var(--text-dim); text-transform:uppercase;" data-i18n="kayo_kpi4_title">RTG 11 to 14 (18 Yrs)</div>
+            <div style="font-size:1.4rem; font-weight:800; color:var(--accent-green); margin:0.2rem 0;" data-i18n="kayo_kpi4_val">Structure 3.5 / 5.0</div>
+            <div style="font-size:0.78rem; color:var(--tcp-blue-light);" data-i18n="kayo_kpi4_sub">Electrify now: extends 7 yrs and cuts 65% cost!</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Barra de Controle Interativo -->
+      <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:1rem; margin-bottom:1.25rem;">
+        <!-- Filtro por Lote -->
+        <div style="display:flex; align-items:center; gap:0.5rem; flex-wrap:wrap;">
+          <span style="font-size:0.85rem; color:var(--text-dim); font-weight:600;" data-i18n="filter_lot_label">Filter Batch:</span>
+          <button class="kayo-filter-btn active" data-filter="all" data-i18n="filter_kayo_all">All (11 RTGs)</button>
+          <button class="kayo-filter-btn" data-filter="04-06" data-i18n="filter_kayo_04_06">RTG 04-06 (Kone 2001)</button>
+          <button class="kayo-filter-btn" data-filter="07" data-i18n="filter_kayo_07">RTG 07 (Decommissioned)</button>
+          <button class="kayo-filter-btn" data-filter="08-10" data-i18n="filter_kayo_08_10">RTG 08-10 (Kalmar 2004)</button>
+          <button class="kayo-filter-btn" data-filter="11-14" data-i18n="filter_kayo_11_14">RTG 11-14 (Kone 2008)</button>
+        </div>
+
+        <!-- Modos de Exibição -->
+        <div style="display:flex; align-items:center; gap:0.5rem;">
+          <span style="font-size:0.85rem; color:var(--text-dim); font-weight:600;" data-i18n="view_mode_label">View Mode:</span>
+          <button class="kayo-view-btn active" data-view="cards" data-i18n="btn_view_cards">📌 Cards & Failures</button>
+          <button class="kayo-view-btn" data-view="charts" data-i18n="btn_view_charts">📊 Radar Charts</button>
+          <button class="kayo-view-btn" data-view="table" data-i18n="btn_view_table">📑 Full Matrix</button>
+          <button class="kayo-view-btn" data-view="economic" data-i18n="btn_view_eco">💰 CMP Economic TCO</button>
+        </div>
+      </div>
+
+      <!-- VIEW 1: CARDS DETALHADOS POR RTG -->
+      <div id="kayo-cards-view">
+        <div class="kpi-grid" id="kayo-matrix-cards">
+          <!-- Dynamically rendered via app.js -->
+        </div>
+      </div>
+
+      <!-- VIEW 2: GRÁFICOS RADAR & COMPARATIVO -->
+      <div id="kayo-charts-view" style="display:none;">
+        <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(480px, 1fr)); gap:1.5rem; margin-bottom:1.5rem;">
+          <div style="background:var(--bg-card); border:1px solid var(--border-color); border-radius:var(--radius-md); padding:1.5rem;">
+            <div style="margin-bottom:1rem;">
+              <h3 style="font-size:1.1rem; color:var(--text-main);" data-i18n="kayo_chart_radar_title">Comparative Subsystems Diagnosis (Technical Health Radar)</h3>
+              <p style="font-size:0.8rem; color:var(--text-muted);" data-i18n="kayo_chart_radar_sub">Compares average technical rating (1 to 5) across 10 assessed CMPort subsystems.</p>
+            </div>
+            <div style="height:380px; position:relative;">
+              <canvas id="kayoRadarChart"></canvas>
+            </div>
+          </div>
+          <div style="background:var(--bg-card); border:1px solid var(--border-color); border-radius:var(--radius-md); padding:1.5rem;">
+            <div style="margin-bottom:1rem;">
+              <h3 style="font-size:1.1rem; color:var(--text-main);" data-i18n="kayo_chart_tco_title">CMPort Official Economic Assessment: 5-Year TCO by Crane</h3>
+              <p style="font-size:0.8rem; color:var(--text-muted);" data-i18n="kayo_chart_tco_sub">Traditional Retrofit vs New E-RTG Replacement vs Electrification 11-14.</p>
+            </div>
+            <div style="height:380px; position:relative;">
+              <canvas id="kayoTcoBarChart"></canvas>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- VIEW 3: TABELA OFICIAL COMPLETA -->
+      <div id="kayo-table-view" style="display:none;">
+        <div style="background:var(--bg-card); border:1px solid var(--border-color); border-radius:var(--radius-md); padding:1.25rem; overflow-x:auto;">
+          <h3 style="font-size:1.1rem; color:var(--text-main); margin-bottom:0.75rem;" data-i18n="kayo_table_subs_title">Official Spreadsheet Mirror: 10 Subsystem Scores by Equipment</h3>
+          <table class="data-table" id="kayo-subs-table" style="width:100%; font-size:0.82rem;">
+            <thead>
+              <tr>
+                <th data-i18n="th_subs_rtg">RTG</th>
+                <th data-i18n="th_subs_mfg">Manufacturer</th>
+                <th data-i18n="th_subs_year">Year</th>
+                <th data-i18n="th_subs_age">Age</th>
+                <th data-i18n="th_subs_structure">1. Structure</th>
+                <th data-i18n="th_subs_gantry">2. Gantry</th>
+                <th data-i18n="th_subs_trolley">3. Trolley</th>
+                <th data-i18n="th_subs_hoisting">4. Hoisting</th>
+                <th data-i18n="th_subs_power">5. Energy</th>
+                <th data-i18n="th_subs_drives">6. Drives</th>
+                <th data-i18n="th_subs_plc">7. PLC</th>
+                <th data-i18n="th_subs_safety">8. Safety</th>
+                <th data-i18n="th_subs_cabin">9. Cabin</th>
+                <th data-i18n="th_subs_aux">10. Aux.</th>
+                <th data-i18n="th_subs_cmp_avg">CMP Average</th>
+                <th data-i18n="th_subs_official_rec">Official Directive</th>
+              </tr>
+            </thead>
+            <tbody id="kayo-subs-tbody">
+              <!-- Rendered via app.js -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- VIEW 4: AVALIAÇÃO ECONÔMICA OFICIAL CMP (ECONOMIC ASSESSMENT) -->
+      <div id="kayo-economic-view" style="display:none;">
+        <div style="background:var(--bg-card); border:1px solid var(--border-color); border-radius:var(--radius-md); padding:1.25rem; overflow-x:auto;">
+          <div style="margin-bottom:1rem;">
+            <h3 style="font-size:1.1rem; color:var(--text-main);" data-i18n="kayo_eco_title">CMPort Official Assessment: Recalculated 'Economic Assessment' Sheet</h3>
+            <p style="font-size:0.82rem; color:var(--text-muted);" data-i18n="kayo_eco_sub">
+              Calculation based on annualized real maintenance spend, downtime costs, and retrofit vs replacement investment.
+            </p>
+          </div>
+          <table class="data-table" id="kayo-eco-table" style="width:100%; font-size:0.82rem;">
+            <thead>
+              <tr>
+                <th data-i18n="th_eco_equip">Equipment</th>
+                <th data-i18n="th_eco_current_maint">Current Annual Maint. Spend</th>
+                <th data-i18n="th_eco_capex_retro">Estimated Retrofit CAPEX</th>
+                <th data-i18n="th_eco_life_ext">Life Extension (Years)</th>
+                <th data-i18n="th_eco_5y_retro">5Y CMP Retrofit Cost</th>
+                <th data-i18n="th_eco_capex_new">New E-RTG CAPEX</th>
+                <th data-i18n="th_eco_5y_new">5Y CMP New RTG Cost</th>
+                <th data-i18n="th_eco_pct_capex">% Retrofit / New</th>
+                <th data-i18n="th_eco_official_rec">Official Economic Rec.</th>
+                <th data-i18n="th_eco_tcp_strategy">Recommended TCP Strategy</th>
+              </tr>
+            </thead>
+            <tbody id="kayo-eco-tbody">
+              <!-- Rendered via app.js -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- ========================================== -->
+    <!-- TAB 6: SINERGIAS NAVAIS & CRONOGRAMA CMP   -->
+    <!-- ========================================== -->
+    <div id="tab-synergies" class="tab-pane">
+      <div class="solutions-container">
+        
+        <div class="solution-card">
+          <div class="solution-header">
+            <span class="solution-badge badge-recommended" data-i18n="syn_badge">🚢 Joint Heavy-Lift Shipping Synergy (ZPMC / SANY)</span>
+            <h2 class="solution-title" data-i18n="syn_title">Combined Maritime Heavy-Lift Charter: 10 RTGs + 2 STSs on the Same Ship</h2>
+          </div>
+          <div class="solution-body">
+            <p style="font-size:0.9rem; color:var(--text-main); margin-bottom:1rem;" data-i18n="syn_desc">
+              Leo Xiaoyun has formally confirmed with the engineering teams of ZPMC and SANY the feasibility of shipping 10 new E-RTGs alongside 2 new STSs on a single heavy-lift specialized vessel.
+            </p>
+            <ul class="feature-list">
+              <li class="feature-item">
+                <span class="feature-icon check">✓</span>
+                <span data-i18n="syn_f1_desc"><strong>ZPMC Proposal:</strong> 10 RTGs + 2 STSs loaded with temporary sea-fastening of lower bogies, fully re-erected at Paranaguá wharf.</span>
+              </li>
+              <li class="feature-item">
+                <span class="feature-icon check">✓</span>
+                <span data-i18n="syn_f2_desc"><strong>SANY Proposal:</strong> Direct confirmed alternative for joint voyage of 10 RTGs and 2 STSs.</span>
+              </li>
+              <li class="feature-item">
+                <span class="feature-icon check">✓</span>
+                <span data-i18n="syn_f3_desc"><strong>Freight Cost Avoidance:</strong> A standalone RTG heavy-lift voyage costs US$ 4.0M to US$ 5.5M. Shipping together captures this massive saving immediately.</span>
+              </li>
+              <li class="feature-item">
+                <span class="feature-icon warn">!</span>
+                <span data-i18n="syn_f4_desc"><strong>Irrepeatable Window:</strong> If RTG procurement is delayed, future freight must be funded separately in full.</span>
+              </li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="solution-card">
+          <div class="solution-header">
+            <span class="solution-badge badge-recommended" data-i18n="timeline_badge">📅 China Merchants Port Corporate Timeline</span>
+            <h2 class="solution-title" data-i18n="timeline_title">Milestone Approval & Manufacturing Roadmap (Oct/2026 to May/2028)</h2>
+          </div>
+          <div class="solution-body">
+            <div style="display:flex; flex-direction:column; gap:0.85rem;">
+              <div style="border-left:3px solid var(--accent-green); padding-left:0.75rem;" data-i18n="timeline_1">
+                <strong>Oct-Nov / 2026:</strong> Local TCP Feasibility Study Conclusion & Board Formalization.
+              </div>
+              <div style="border-left:3px solid var(--tcp-blue); padding-left:0.75rem;" data-i18n="timeline_2">
+                <strong>December / 2026:</strong> Formal CMP Investment Committee Approval Submission.
+              </div>
+              <div style="border-left:3px solid var(--cmp-gold); padding-left:0.75rem;" data-i18n="timeline_3">
+                <strong>January / 2027:</strong> CMP Core Management Meeting Approval & Technical Specifications.
+              </div>
+              <div style="border-left:3px solid var(--accent-purple); padding-left:0.75rem;" data-i18n="timeline_4">
+                <strong>Feb-Apr / 2027:</strong> Bidding Documents Approval & International Public Tender.
+              </div>
+              <div style="border-left:3px solid var(--accent-green); padding-left:0.75rem;" data-i18n="timeline_5">
+                <strong>May/2027 to May/2028:</strong> Manufacturing, Factory Testing, Assembly & Combined STS+RTG Delivery Voyage.
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+  </main>
+
+  <!-- Dossier / Report Modal -->
+  <div id="report-modal" class="modal-overlay">
+    <div class="modal-container">
+      <div class="modal-header">
+        <div>
+          <h2 data-i18n="modal_title">Executive Strategic Decision Dossier</h2>
+          <p style="font-size:0.82rem; color:var(--text-muted);" data-i18n="modal_sub">For presentation to TCP Board and CMPort Investment Committee</p>
+        </div>
+        <button id="btn-close-modal" class="btn-close">&times;</button>
+      </div>
+
+      <div class="modal-body" style="font-size:0.9rem; line-height:1.6; color:var(--text-main);">
+        <h3 style="color:var(--accent-green); margin-bottom:0.5rem;" data-i18n="modal_h3_1">1. Solution 2 Highlight: Optimal Technical & Financial Choice for TCP</h3>
+        <p data-i18n="modal_p_1">
+          Replacement of TCP's oldest 10-crane block (RTGs 01 to 10, excluding decommissioned 07) with 10 new 1-over-6 E-RTGs via ZPMC/SANY, combined with the <strong>Electrification of RTGs 11 to 14 (Konecranes 2008)</strong>.<br>
+          This strategy eliminates the 25-year structural risk of RTGs 01-03 (avoiding forced costs of ~R$ 2.2M on double hoist gearboxes, trolley wheels and rails) and recovers RTGs 11 to 14, whose elevated spend stemmed from diesel gensets. Post-electrification, RTGs 11 to 14 operate at <strong>R$ 57.03/h</strong> with superior reliability over 01-03 due to 7 fewer years of metal fatigue.<br>
+          <em style="color:var(--cmp-gold-light);"><strong>Next Opportunity Directive:</strong> Official audit proved that the Konecranes batch accounts for 100% of TR-11-2 Brake spend (R$ 754.9k) and 100% of Konecranes Rectifiers (R$ 345.8k) terminal-wide. Current electrification serves as a cost bridge for 5 to 6 years, with definitive replacement scheduled for the next procurement cycle.</em>
+        </p>
+        <br>
+        <h3 style="color:var(--tcp-blue-light); margin-bottom:0.5rem;" data-i18n="modal_h3_2">2. Validation via ZPMC Benchmark (2024)</h3>
+        <p data-i18n="modal_p_2">
+          With 2 years and 10 months of continuous operation at TCP, the 11 ZPMC cranes deliver an audited cost of <strong>R$ 22.90/h</strong> and average <strong>671.6 h/month</strong> per asset with >95% availability. This materially proves ROI to the CMPort Board for new equipment.
+        </p>
+        <br>
+        <h3 style="color:var(--tcp-blue-light); margin-bottom:0.5rem;" data-i18n="modal_h3_3">3. Life-Cycle Advantage (LCC) & Shared Heavy-Lift Vessel</h3>
+        <p data-i18n="modal_p_3">
+          Shipping 10 RTGs on the same heavy-lift vessel as 2 STSs saves <strong>US$ 4.0 million</strong> in freight immediately. Annualized capital cost is <strong>US$ 94k/yr per crane</strong> (over 22 years), compared to <strong>US$ 225k/yr</strong> for a Retrofit (over 6 years), generating net life-cycle savings exceeding <strong>US$ 24.5 million</strong> over 20 years.
+        </p>
+      </div>
+
+      <div style="margin-top:2rem; display:flex; justify-content:flex-end; gap:1rem; border-top:1px solid var(--border-color); padding-top:1rem;">
+        <button id="btn-print-report" class="btn btn-primary">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 6 2 18 2 18 9"></polyline><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"></path><rect x="6" y="14" width="12" height="8"></rect></svg>
+          <span data-i18n="btn_print_pdf">Print / Save as PDF</span>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Scripts -->
+  <script src="i18n.js"></script>
+  <script src="fleet_data.js"></script>
+  <script src="kayo_data.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
