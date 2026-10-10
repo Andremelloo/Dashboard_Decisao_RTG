@@ -1077,31 +1077,68 @@ function updateCharts() {
   state.charts.ann.update();
 }
 
-// Modal Export / Dossier
+// Modal Export / Dossier (Executive Report)
+function openDossierModal() {
+  const modal = document.getElementById('report-modal');
+  if (modal) {
+    modal.classList.add('open');
+    modal.style.display = 'flex';
+    modal.style.opacity = '1';
+    modal.style.visibility = 'visible';
+    modal.style.pointerEvents = 'auto';
+  }
+}
+
+function closeDossierModal() {
+  const modal = document.getElementById('report-modal');
+  if (modal) {
+    modal.classList.remove('open');
+    modal.style.opacity = '0';
+    modal.style.visibility = 'hidden';
+    modal.style.pointerEvents = 'none';
+    setTimeout(() => {
+      if (!modal.classList.contains('open')) {
+        modal.style.display = 'none';
+      }
+    }, 200);
+  }
+}
+
+function printDossierReport() {
+  window.print();
+}
+
+window.openDossierModal = openDossierModal;
+window.closeDossierModal = closeDossierModal;
+window.printDossierReport = printDossierReport;
+
 function initModal() {
   const modal = document.getElementById('report-modal');
   const openBtn = document.getElementById('btn-open-report');
   const closeBtn = document.getElementById('btn-close-modal');
   const printBtn = document.getElementById('btn-print-report');
 
-  if (openBtn && modal) {
-    openBtn.addEventListener('click', () => {
-      modal.classList.add('open');
+  if (openBtn) {
+    openBtn.addEventListener('click', (e) => {
+      e.preventDefault();
+      openDossierModal();
     });
   }
-  if (closeBtn && modal) {
-    closeBtn.addEventListener('click', () => {
-      modal.classList.remove('open');
+  if (closeBtn) {
+    closeBtn.addEventListener('click', (e) => {
+      e.preventDefault();
+      closeDossierModal();
     });
   }
   if (modal) {
     modal.addEventListener('click', (e) => {
-      if (e.target === modal) modal.classList.remove('open');
+      if (e.target === modal) closeDossierModal();
     });
   }
   if (printBtn) {
-    printBtn.addEventListener('click', () => {
-      window.print();
+    printBtn.addEventListener('click', (e) => {
+      e.preventDefault();
+      printDossierReport();
     });
   }
 }

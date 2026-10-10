@@ -51,20 +51,61 @@ body {
   overflow-x: hidden;
 }
 
-/* Scrollbar */
+/* ==========================================================================
+   Scrollbar Personalizado Dourado / Amarelo (CMPort Gold #f59e0b)
+   ========================================================================== */
+* {
+  scrollbar-color: #f59e0b rgba(11, 19, 43, 0.85);
+  scrollbar-width: thin;
+}
+
 ::-webkit-scrollbar {
-  width: 8px;
-  height: 8px;
+  width: 10px;
+  height: 10px;
 }
+
 ::-webkit-scrollbar-track {
-  background: var(--bg-primary);
-}
-::-webkit-scrollbar-thumb {
-  background: var(--bg-card);
+  background: rgba(11, 19, 43, 0.95);
   border-radius: var(--radius-full);
 }
+
+::-webkit-scrollbar-thumb {
+  background: linear-gradient(135deg, #fbbf24 0%, #f59e0b 50%, #d97706 100%);
+  border-radius: var(--radius-full);
+  border: 2px solid #0b132b;
+  box-shadow: 0 0 10px rgba(245, 158, 11, 0.45);
+}
+
 ::-webkit-scrollbar-thumb:hover {
-  background: var(--text-dim);
+  background: linear-gradient(135deg, #fef08a 0%, #fbbf24 50%, #f59e0b 100%);
+  box-shadow: 0 0 15px rgba(251, 191, 36, 0.85);
+}
+
+/* Scrollbar com alto contraste na barra de opções de abas (.nav-tabs) */
+.nav-tabs {
+  scrollbar-color: #fbbf24 rgba(15, 23, 42, 0.9);
+}
+
+.nav-tabs::-webkit-scrollbar {
+  height: 8px;
+}
+
+.nav-tabs::-webkit-scrollbar-track {
+  background: rgba(15, 23, 42, 0.9);
+  border-radius: 9999px;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.nav-tabs::-webkit-scrollbar-thumb {
+  background: linear-gradient(90deg, #d97706, #f59e0b, #fbbf24);
+  border-radius: 9999px;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  box-shadow: 0 0 12px rgba(245, 158, 11, 0.6);
+}
+
+.nav-tabs::-webkit-scrollbar-thumb:hover {
+  background: #fde047;
+  box-shadow: 0 0 18px rgba(253, 224, 71, 0.95);
 }
 
 /* Header */
@@ -799,27 +840,31 @@ tbody tr.decommissioned-row {
 .badge-tag.red { background: rgba(239, 68, 68, 0.15); color: #f87171; }
 .badge-tag.purple { background: rgba(139, 92, 246, 0.15); color: #a78bfa; }
 
-/* Modal */
+/* Modal Dossier */
 .modal-overlay {
   position: fixed;
   top: 0;
   left: 0;
   right: 0;
   bottom: 0;
-  background: rgba(0, 0, 0, 0.75);
-  backdrop-filter: blur(8px);
-  display: flex;
+  background: rgba(4, 9, 20, 0.82);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  display: none;
   justify-content: center;
   align-items: center;
-  z-index: 1000;
+  z-index: 10000;
   opacity: 0;
+  visibility: hidden;
   pointer-events: none;
-  transition: var(--transition);
+  transition: opacity 0.25s ease, visibility 0.25s ease;
 }
 
 .modal-overlay.open {
-  opacity: 1;
-  pointer-events: auto;
+  display: flex !important;
+  opacity: 1 !important;
+  visibility: visible !important;
+  pointer-events: auto !important;
 }
 
 .modal-container {
